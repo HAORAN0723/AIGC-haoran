@@ -1,0 +1,1342 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIGC浩然学长 - Vibe Coding作业展示</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            line-height: 1.6;
+            color: #fff;
+            background: #0a0a0f;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        .meteor {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: radial-gradient(circle, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%);
+            border-radius: 50%;
+            box-shadow: 
+                0 0 8px rgba(255,255,255,0.3),
+                0 0 15px rgba(255,255,255,0.2),
+                0 0 25px rgba(255,255,255,0.1);
+            animation: meteor 4s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+            opacity: 0;
+        }
+
+        .meteor::before {
+            content: '';
+            position: absolute;
+            width: 300px;
+            height: 2px;
+            background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,0.15), rgba(255,255,255,0));
+            transform: translateX(-300px) rotate(-45deg);
+            transform-origin: right center;
+        }
+
+        .meteor::after {
+            content: '';
+            position: absolute;
+            width: 150px;
+            height: 1px;
+            background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,0.08), rgba(255,255,255,0));
+            transform: translateX(-150px) rotate(-45deg);
+            transform-origin: right center;
+        }
+
+        @keyframes meteor {
+            0% {
+                transform: translateZ(-1000px) scale(0.5);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.3;
+            }
+            50% {
+                transform: translateZ(500px) scale(2);
+                opacity: 0.2;
+            }
+            100% {
+                transform: translateZ(2000px) scale(4);
+                opacity: 0;
+            }
+        }
+
+        .nebula {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            background: 
+                radial-gradient(ellipse at 20% 30%, rgba(120, 80, 255, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 70%, rgba(255, 80, 120, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(80, 200, 255, 0.05) 0%, transparent 60%);
+            animation: nebula 20s ease-in-out infinite;
+        }
+
+        @keyframes nebula {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .main-container {
+            display: flex;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+
+        .left-panel {
+            width: 28%;
+            min-width: 300px;
+            background: rgba(10, 10, 15, 0.6);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .right-panel {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 50px;
+        }
+
+        .avatar-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .avatar {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 70px;
+            position: relative;
+            box-shadow: 
+                0 0 60px rgba(102, 126, 234, 0.4),
+                0 0 100px rgba(118, 75, 162, 0.2);
+            margin-bottom: 25px;
+        }
+
+        .avatar::before {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2, #f093fb, #667eea);
+            background-size: 300% 300%;
+            animation: rotate 3s linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes rotate {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .name {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #fff 0%, rgba(255, 255, 255, 0.8) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .tagline {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.6);
+            text-align: center;
+            font-weight: 300;
+        }
+
+        .info-section {
+            margin-top: 30px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 2px;
+        }
+
+        .info-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .info-item {
+            padding: 15px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            font-size: 14px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .info-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(102, 126, 234, 0.5);
+            transform: translateX(5px);
+        }
+
+        .info-item strong {
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .right-panel .section-header {
+            margin-bottom: 40px;
+        }
+
+        .right-panel .section-title {
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #fff 0%, rgba(255, 255, 255, 0.8) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section-subtitle {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .project-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 25px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .project-card:hover::before {
+            opacity: 1;
+        }
+
+        .project-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: rgba(102, 126, 234, 0.4);
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.4),
+                0 0 40px rgba(102, 126, 234, 0.2);
+        }
+
+        .project-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+
+        .project-card:hover .project-icon {
+            transform: scale(1.1);
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.3) 0%, rgba(118, 75, 162, 0.3) 100%);
+        }
+
+        .project-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #fff;
+            position: relative;
+            z-index: 1;
+        }
+
+        .project-description {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 13px;
+            margin-bottom: 15px;
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+            flex-grow: 1;
+        }
+
+        .project-stats {
+            display: flex;
+            gap: 15px;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.7);
+            position: relative;
+            z-index: 1;
+            margin-top: auto;
+        }
+
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .stat-value {
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .click-hint {
+            position: absolute;
+            bottom: 12px;
+            right: 15px;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.4);
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: all 0.3s ease;
+            z-index: 1;
+        }
+
+        .project-card:hover .click-hint {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .modal-content {
+            background: rgba(20, 20, 30, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 800px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+            animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 24px;
+            color: rgba(255, 255, 255, 0.7);
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            transform: rotate(90deg);
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+        }
+
+        .modal-title {
+            font-size: 32px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff 0%, rgba(255, 255, 255, 0.8) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .modal-stats {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+        }
+
+        .modal-stat {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .modal-stat-label {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .modal-stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .modal-description {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 16px;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+
+        .modal-description-section {
+            margin-bottom: 30px;
+        }
+
+        .modal-description-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #fff;
+        }
+
+        .modal-description-text {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 15px;
+            line-height: 1.8;
+        }
+
+        .modal-link {
+            display: inline-block;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            margin-bottom: 30px;
+        }
+
+        .modal-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .rating-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+        }
+
+        .rating-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #fff;
+        }
+
+        .rating-stars {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .rating-star {
+            font-size: 32px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .rating-star:hover {
+            transform: scale(1.2);
+        }
+
+        .rating-star.active {
+            color: #ffd700;
+        }
+
+        .rating-star.half {
+            position: relative;
+            color: #ffd700;
+        }
+
+        .rating-star.half::before {
+            content: '★';
+            position: absolute;
+            left: 0;
+            width: 50%;
+            overflow: hidden;
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .rating-message {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+            min-height: 20px;
+        }
+
+        .rating-message.success {
+            color: #4ade80;
+        }
+
+        .rating-message.error {
+            color: #f87171;
+        }
+
+        .comments-section {
+            margin-bottom: 30px;
+        }
+
+        .comments-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        .comments-list {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        .comment-item {
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            margin-bottom: 12px;
+        }
+
+        .comment-date {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 8px;
+        }
+
+        .comment-text {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .comment-input-section {
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+        }
+
+        .comment-textarea {
+            width: 100%;
+            min-height: 100px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 12px;
+            color: #fff;
+            font-size: 14px;
+            resize: vertical;
+            margin-bottom: 10px;
+            font-family: inherit;
+        }
+
+        .comment-textarea:focus {
+            outline: none;
+            border-color: rgba(102, 126, 234, 0.5);
+        }
+
+        .comment-textarea::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .comment-char-count {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+            text-align: right;
+            margin-bottom: 10px;
+        }
+
+        .comment-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .comment-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .comment-btn-submit {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+        }
+
+        .comment-btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .comment-btn-cancel {
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .comment-btn-cancel:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .comment-message {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+            min-height: 20px;
+            margin-top: 10px;
+        }
+
+        .comment-message.success {
+            color: #4ade80;
+        }
+
+        .comment-message.error {
+            color: #f87171;
+        }
+
+        .no-comments {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.5);
+            padding: 30px;
+            font-size: 14px;
+        }
+
+        @media (max-width: 1200px) {
+            .left-panel {
+                width: 40%;
+                min-width: 320px;
+            }
+
+            .projects-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 900px) {
+            .main-container {
+                flex-direction: column;
+            }
+
+            .left-panel {
+                width: 100%;
+                min-width: auto;
+                height: auto;
+                position: relative;
+                border-right: none;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .projects-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .left-panel, .right-panel {
+                padding: 20px;
+            }
+
+            .avatar {
+                width: 150px;
+                height: 150px;
+                font-size: 60px;
+            }
+
+            .name {
+                font-size: 28px;
+            }
+
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-content {
+                padding: 20px;
+            }
+
+            .modal-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .modal-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 30px;
+            }
+
+            .modal-title {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="stars" id="stars"></div>
+    <div class="nebula"></div>
+
+    <div class="main-container">
+        <aside class="left-panel">
+            <div class="logo">My Portfolio</div>
+            
+            <div class="avatar-container">
+                <div class="avatar">👤</div>
+                <h1 class="name">AIGC浩然学长</h1>
+                <p class="tagline">一个看不懂代码的程序员，Vibe Coding 爱好者</p>
+            </div>
+
+            <div class="info-section">
+                <h2 class="section-title">联系方式</h2>
+                <div class="info-grid">
+                    <div class="info-item"><strong>📧 邮箱：</strong><a href="mailto:hcx20200708@gmail.com" style="color: #667eea; text-decoration: none;">hcx20200708@gmail.com</a></div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="right-panel">
+            <div class="section-header">
+                <h2 class="section-title">Vibe Coding 作业展示</h2>
+                <p class="section-subtitle">点击卡片查看详情并进行互动</p>
+            </div>
+            <div class="projects-grid" id="projectsGrid">
+            </div>
+        </main>
+    </div>
+
+    <div class="modal" id="modal">
+        <div class="modal-content" id="modalContent">
+            <div class="modal-close" id="modalClose">×</div>
+            <div class="modal-header">
+                <div class="modal-icon" id="modalIcon"></div>
+                <div class="modal-title" id="modalTitle"></div>
+            </div>
+            <div class="modal-stats">
+                <div class="modal-stat">
+                    <span class="modal-stat-label">评分</span>
+                    <span class="modal-stat-value" id="modalRating">⭐ 0.0</span>
+                </div>
+                <div class="modal-stat">
+                    <span class="modal-stat-label">评论</span>
+                    <span class="modal-stat-value" id="modalComments">💬 0</span>
+                </div>
+            </div>
+            <div class="modal-description-section">
+                <div class="modal-description-title">简短描述</div>
+                <div class="modal-description-text" id="modalShortDesc"></div>
+            </div>
+            <div class="modal-description-section">
+                <div class="modal-description-title">详细描述</div>
+                <div class="modal-description-text" id="modalFullDesc"></div>
+            </div>
+            <a href="#" class="modal-link" id="modalLink" style="display: none;">🔗 查看作业详情 →</a>
+            
+            <div class="rating-section">
+                <div class="rating-title">为这个作业评分</div>
+                <div class="rating-stars" id="ratingStars">
+                    <span class="rating-star" data-rating="1">★</span>
+                    <span class="rating-star" data-rating="2">★</span>
+                    <span class="rating-star" data-rating="3">★</span>
+                    <span class="rating-star" data-rating="4">★</span>
+                    <span class="rating-star" data-rating="5">★</span>
+                </div>
+                <div class="rating-message" id="ratingMessage"></div>
+            </div>
+
+            <div class="comments-section">
+                <div class="comments-title">评论列表（最新10条）</div>
+                <div class="comments-list" id="commentsList">
+                    <div class="no-comments">暂无评论</div>
+                </div>
+                <div class="comment-input-section">
+                    <textarea class="comment-textarea" id="commentText" placeholder="请输入您的评论... (0/500)" maxlength="500"></textarea>
+                    <div class="comment-char-count" id="charCount">0/500</div>
+                    <div class="comment-buttons">
+                        <button class="comment-btn comment-btn-cancel" id="cancelComment">取消</button>
+                        <button class="comment-btn comment-btn-submit" id="submitComment">提交评论</button>
+                    </div>
+                    <div class="comment-message" id="commentMessage"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const projects = [
+            {
+                id: 1,
+                icon: '🔍',
+                title: '洞察之眼',
+                shortDesc: '学习如何发现用户痛点并提出解决方案',
+                fullDesc: '本作业通过用户调研和数据分析，学习如何识别产品中的核心痛点，并运用设计思维提出创新解决方案。通过实际案例分析，掌握痛点挖掘的方法论和工具。',
+                rating: 0.0,
+                ratingCount: 0,
+                comments: [],
+                link: 'https://example.com/assignment-1'
+            },
+            {
+                id: 2,
+                icon: '🌊',
+                title: '数据之流',
+                shortDesc: '探索数据在产品中的流动和处理方式',
+                fullDesc: '本作业深入研究数据在产品生命周期中的流动路径，包括数据采集、处理、存储和展示。通过实践项目，理解数据驱动产品决策的重要性。',
+                rating: 0.0,
+                ratingCount: 0,
+                comments: [],
+                link: 'https://example.com/assignment-2'
+            },
+            {
+                id: 3,
+                icon: '🤖',
+                title: 'AI伙伴',
+                shortDesc: '学习如何与AI协作提升工作效率',
+                fullDesc: '本作业探索AI工具在日常工作中的应用，包括代码生成、文档撰写、数据分析等。通过实际项目，掌握与AI协作的最佳实践。',
+                rating: 0.0,
+                ratingCount: 0,
+                comments: [],
+                link: 'https://example.com/assignment-3'
+            },
+            {
+                id: 4,
+                icon: '🛠️',
+                title: '编程助手',
+                shortDesc: '开发实用的编程辅助工具',
+                fullDesc: '本作业要求开发一个实用的编程辅助工具，可以是代码片段管理、自动化脚本、调试工具等。通过实践，提升编程效率和工具开发能力。',
+                rating: 0.0,
+                ratingCount: 0,
+                comments: [],
+                link: 'https://example.com/assignment-4'
+            },
+            {
+                id: 5,
+                icon: '🚀',
+                title: '能力进化',
+                shortDesc: '系统化提升编程能力和技术视野',
+                fullDesc: '本作业通过系统化的学习和实践，全面提升编程能力和技术视野。包括算法、架构、设计模式等多个维度的深入学习和应用。',
+                rating: 0.0,
+                ratingCount: 0,
+                comments: [],
+                link: 'https://example.com/assignment-5'
+            },
+            {
+                id: 6,
+                icon: '🌐',
+                title: '部署上线',
+                shortDesc: '学习项目部署和运维的基础知识',
+                fullDesc: '本作业学习项目部署到生产环境的完整流程，包括服务器配置、CI/CD、监控告警等。通过实际部署，掌握运维基础知识。',
+                rating: 0.0,
+                ratingCount: 0,
+                comments: [],
+                link: 'https://example.com/assignment-6'
+            },
+            {
+                id: 7,
+                icon: '✨',
+                title: '创意变现',
+                shortDesc: '将创意想法转化为实际产品',
+                fullDesc: '本作业要求从创意想法出发，完整实现一个产品原型。包括需求分析、设计、开发、测试等全流程，培养产品思维和实现能力。',
+                rating: 0.0,
+                ratingCount: 0,
+                comments: [],
+                link: 'https://example.com/assignment-7'
+            },
+            {
+                id: 8,
+                icon: '🥚',
+                title: '从零开始',
+                shortDesc: '从零开始构建一个完整的项目',
+                fullDesc: '本作业要求从零开始，独立完成一个完整项目的开发。包括技术选型、架构设计、功能实现、测试优化等全流程，综合运用所学知识。',
+                rating: 0.0,
+                ratingCount: 0,
+                comments: [],
+                link: 'https://example.com/assignment-8'
+            }
+        ];
+
+        let currentProjectId = null;
+
+        function renderProjects() {
+            const grid = document.getElementById('projectsGrid');
+            grid.innerHTML = '';
+
+            projects.forEach(project => {
+                const card = document.createElement('div');
+                card.className = 'project-card';
+                card.setAttribute('data-id', project.id);
+                card.innerHTML = `
+                    <div class="project-icon">${project.icon}</div>
+                    <h3 class="project-title">${project.title}</h3>
+                    <p class="project-description">${project.shortDesc}</p>
+                    <div class="project-stats">
+                        <span class="stat">⭐ <span class="stat-value">${project.rating.toFixed(1)}</span></span>
+                        <span class="stat">💬 <span class="stat-value">${project.comments.length}</span></span>
+                    </div>
+                    <div class="click-hint">查看详情 →</div>
+                `;
+                card.addEventListener('click', function() { openModal(project); });
+                grid.appendChild(card);
+            });
+        }
+
+        function openModal(project) {
+            currentProjectId = project.id;
+            
+            document.getElementById('modalIcon').textContent = project.icon;
+            document.getElementById('modalTitle').textContent = project.title;
+            document.getElementById('modalRating').textContent = '⭐ ' + project.rating.toFixed(1);
+            document.getElementById('modalComments').textContent = '💬 ' + project.comments.length;
+            document.getElementById('modalShortDesc').textContent = project.shortDesc;
+            document.getElementById('modalFullDesc').textContent = project.fullDesc;
+            
+            const linkElement = document.getElementById('modalLink');
+            if (project.link && project.link !== '#') {
+                linkElement.href = project.link;
+                linkElement.style.display = 'inline-block';
+            } else {
+                linkElement.style.display = 'none';
+            }
+
+            loadProjectData(project);
+            document.getElementById('modal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+            currentProjectId = null;
+        }
+
+        function loadProjectData(project) {
+            loadRatings(project);
+            loadComments(project);
+        }
+
+        function loadRatings(project) {
+            const userRating = getUserRating(project.id);
+            updateRatingStars(userRating);
+            document.getElementById('ratingMessage').textContent = userRating > 0 ? '当前评分：' + userRating + '星' : '';
+        }
+
+        function getUserRating(projectId) {
+            try {
+                const data = localStorage.getItem('projectRatings');
+                if (data) {
+                    const ratings = JSON.parse(data);
+                    return ratings[projectId] || 0;
+                }
+            } catch (e) {
+                console.error('读取评分失败:', e);
+            }
+            return 0;
+        }
+
+        function saveUserRating(projectId, rating) {
+            try {
+                let ratings = {};
+                const data = localStorage.getItem('projectRatings');
+                if (data) {
+                    ratings = JSON.parse(data);
+                }
+                ratings[projectId] = rating;
+                localStorage.setItem('projectRatings', JSON.stringify(ratings));
+                return true;
+            } catch (e) {
+                console.error('保存评分失败:', e);
+                return false;
+            }
+        }
+
+        function updateRatingStars(userRating) {
+            const stars = document.querySelectorAll('.rating-star');
+            stars.forEach(star => {
+                const rating = parseInt(star.getAttribute('data-rating'));
+                if (rating <= userRating) {
+                    star.classList.add('active');
+                } else {
+                    star.classList.remove('active');
+                }
+            });
+        }
+
+        function handleRating(rating) {
+            const project = projects.find(p => p.id === currentProjectId);
+            if (!project) return;
+
+            const oldRating = getUserRating(project.id);
+            const success = saveUserRating(project.id, rating);
+
+            if (success) {
+                if (oldRating > 0) {
+                    project.rating = (project.rating * project.ratingCount - oldRating + rating) / project.ratingCount;
+                } else {
+                    project.rating = (project.rating * project.ratingCount + rating) / (project.ratingCount + 1);
+                    project.ratingCount++;
+                }
+
+                updateRatingStars(rating);
+                document.getElementById('modalRating').textContent = '⭐ ' + project.rating.toFixed(1);
+                document.getElementById('ratingMessage').textContent = '评分成功！';
+                document.getElementById('ratingMessage').className = 'rating-message success';
+                
+                renderProjects();
+                
+                setTimeout(function() {
+                    document.getElementById('ratingMessage').textContent = '当前评分：' + rating + '星';
+                    document.getElementById('ratingMessage').className = 'rating-message';
+                }, 3000);
+            } else {
+                document.getElementById('ratingMessage').textContent = '评分失败，请稍后重试';
+                document.getElementById('ratingMessage').className = 'rating-message error';
+            }
+        }
+
+        function loadComments(project) {
+            const commentsList = document.getElementById('commentsList');
+            
+            if (project.comments.length === 0) {
+                commentsList.innerHTML = '<div class="no-comments">暂无评论</div>';
+                return;
+            }
+
+            const sortedComments = [...project.comments].sort(function(a, b) {
+                return new Date(b.date) - new Date(a.date);
+            });
+
+            const recentComments = sortedComments.slice(0, 10);
+
+            commentsList.innerHTML = recentComments.map(function(comment) {
+                return `
+                    <div class="comment-item">
+                        <div class="comment-date">${comment.date}</div>
+                        <div class="comment-text">${comment.text}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function handleComment() {
+            const project = projects.find(p => p.id === currentProjectId);
+            if (!project) return;
+
+            const textarea = document.getElementById('commentText');
+            const text = textarea.value.trim();
+
+            if (!text) {
+                document.getElementById('commentMessage').textContent = '请输入评论内容';
+                document.getElementById('commentMessage').className = 'comment-message error';
+                return;
+            }
+
+            if (text.length > 500) {
+                document.getElementById('commentMessage').textContent = '评论内容不能超过500字';
+                document.getElementById('commentMessage').className = 'comment-message error';
+                return;
+            }
+
+            const success = saveComment(project.id, text);
+
+            if (success) {
+                const now = new Date();
+                const dateStr = now.getFullYear() + '-' + 
+                    String(now.getMonth() + 1).padStart(2, '0') + '-' + 
+                    String(now.getDate()).padStart(2, '0') + ' ' + 
+                    String(now.getHours()).padStart(2, '0') + ':' + 
+                    String(now.getMinutes()).padStart(2, '0');
+
+                project.comments.push({
+                    date: dateStr,
+                    text: text
+                });
+
+                loadComments(project);
+                document.getElementById('modalComments').textContent = '💬 ' + project.comments.length;
+                textarea.value = '';
+                updateCharCount();
+                document.getElementById('commentMessage').textContent = '评论成功！';
+                document.getElementById('commentMessage').className = 'comment-message success';
+                
+                renderProjects();
+
+                setTimeout(function() {
+                    document.getElementById('commentMessage').textContent = '';
+                }, 3000);
+            } else {
+                document.getElementById('commentMessage').textContent = '评论失败，请稍后重试';
+                document.getElementById('commentMessage').className = 'comment-message error';
+            }
+        }
+
+        function saveComment(projectId, text) {
+            try {
+                let allComments = {};
+                const data = localStorage.getItem('projectComments');
+                if (data) {
+                    allComments = JSON.parse(data);
+                }
+                if (!allComments[projectId]) {
+                    allComments[projectId] = [];
+                }
+                
+                const now = new Date();
+                const dateStr = now.getFullYear() + '-' + 
+                    String(now.getMonth() + 1).padStart(2, '0') + '-' + 
+                    String(now.getDate()).padStart(2, '0') + ' ' + 
+                    String(now.getHours()).padStart(2, '0') + ':' + 
+                    String(now.getMinutes()).padStart(2, '0');
+
+                allComments[projectId].push({
+                    date: dateStr,
+                    text: text
+                });
+                localStorage.setItem('projectComments', JSON.stringify(allComments));
+                return true;
+            } catch (e) {
+                console.error('保存评论失败:', e);
+                return false;
+            }
+        }
+
+        function loadAllComments() {
+            try {
+                const data = localStorage.getItem('projectComments');
+                if (data) {
+                    const allComments = JSON.parse(data);
+                    projects.forEach(project => {
+                        if (allComments[project.id]) {
+                            project.comments = allComments[project.id];
+                        }
+                    });
+                }
+            } catch (e) {
+                console.error('加载评论失败:', e);
+            }
+        }
+
+        function updateCharCount() {
+            const textarea = document.getElementById('commentText');
+            const count = textarea.value.length;
+            document.getElementById('charCount').textContent = count + '/500';
+        }
+
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            for (let i = 0; i < 200; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                starsContainer.appendChild(star);
+            }
+
+            for (let i = 0; i < 10; i++) {
+                const meteor = document.createElement('div');
+                meteor.className = 'meteor';
+                meteor.style.left = Math.random() * 100 + '%';
+                meteor.style.top = Math.random() * 50 + '%';
+                meteor.style.animationDelay = Math.random() * 4 + 's';
+                starsContainer.appendChild(meteor);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            createStars();
+            loadAllComments();
+            renderProjects();
+
+            document.getElementById('modalClose').addEventListener('click', closeModal);
+            document.getElementById('modal').addEventListener('click', function(e) {
+                if (e.target === document.getElementById('modal')) {
+                    closeModal();
+                }
+            });
+
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeModal();
+                }
+            });
+
+            const ratingStars = document.querySelectorAll('.rating-star');
+            ratingStars.forEach(star => {
+                star.addEventListener('click', function() {
+                    const rating = parseInt(this.getAttribute('data-rating'));
+                    handleRating(rating);
+                });
+            });
+
+            document.getElementById('submitComment').addEventListener('click', handleComment);
+            document.getElementById('cancelComment').addEventListener('click', function() {
+                document.getElementById('commentText').value = '';
+                updateCharCount();
+                document.getElementById('commentMessage').textContent = '';
+            });
+
+            document.getElementById('commentText').addEventListener('input', updateCharCount);
+        });
+    </script>
+</body>
+</html>
